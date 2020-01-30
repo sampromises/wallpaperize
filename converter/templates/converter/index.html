@@ -16,8 +16,11 @@
 </head>
 <body>
 
-{% load static %}
+{% if errors %}
+    <p>Something went wrong.</p>
+{% endif %}
 
+{% load static %}
 
 {% block content %}
 <form method="post" enctype="multipart/form-data">

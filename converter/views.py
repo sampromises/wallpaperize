@@ -6,10 +6,9 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template import loader
 
-from converter.backend.resolutions import resolution
-from converter.backend.resolutions import HD_1080
 from converter.backend.convert import create_wallpaper
-from converter.backend.resolutions import IPHONE_XS
+from converter.backend.resolutions import HD_1080
+from converter.backend.resolutions import resolution
 
 
 def add_suffix(filename, suffix):
@@ -21,9 +20,10 @@ def add_suffix(filename, suffix):
 def index(request):
     template = loader.get_template('converter/index.html')
 
-    if request.method == 'POST' and request.FILES['uploaded_image']:
-        image = Image.open(request.FILES['uploaded_image'])
-        filename = request.FILES['uploaded_image'].name
+    try:
+        if request.method == 'POST' and request.FILES['uploaded_image']:
+            image = Image.open(request.FILES['uploaded_image'])
+            filename = request.FILES['uploaded_image'].name
 
             # TODO: Choose resolution
             if 'width' in request.POST and 'height' in request.POST:
@@ -32,22 +32,25 @@ def index(request):
             else:
                 res = HD_1080
 
-        # TODO: Choose color, None will default to most common color
-        color = None
+            # TODO: Choose color, None will default to most common color
+            color = None
 
-        wallpaper = create_wallpaper(image, res, color)
-        wallpaper_filename = add_suffix(filename, res.name)
+            wallpaper = create_wallpaper(image, res, color)
+            wallpaper_filename = add_suffix(filename, res.name)
 
-        fs = FileSystemStorage()
+            fs = FileSystemStorage()
 
-        wallpaper_path = os.path.join(fs.base_location, wallpaper_filename)
-        wallpaper.save(wallpaper_path)
+            wallpaper_path = os.path.join(fs.base_location, wallpaper_filename)
+            wallpaper.save(wallpaper_path)
 
-        context = {
-            "wallpaper_created": True,
-            "wallpaper_path": os.path.join(settings.MEDIA_URL, wallpaper_filename),
-        }
+            context = {
+                "wallpaper_created": True,
+                "wallpaper_path": os.path.join(settings.MEDIA_URL, wallpaper_filename),
+            }
 
+            return HttpResponse(template.render(context, request))
+    except:
+        context = {"errors": True}
         return HttpResponse(template.render(context, request))
 
     return HttpResponse(template.render({}, request))
