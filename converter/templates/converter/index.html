@@ -18,18 +18,31 @@
 
 {% load static %}
 
-<p>Upload image</p>
 
 {% block content %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    Upload image:
+
+    <br>
+
     <input type="file" name="uploaded_image">
-    <button type="submit">Upload</button>
+
+    <br><br>
+
+    Enter desired resolution:
+    <br>
+    Width: <input type="text" name="width" value="1920">
+    Height: <input type="text" name="height" value="1080">
+
+    <br><br>
+
+    <button type="submit">Submit</button>
 </form>
+
 
 {% if wallpaper_created %}
 <p>Wallpaper is here!</p>
-<p>{{ wallpaper_path }}</p>
 <img src="{{ wallpaper_path }}" alt="Wallpaper Image"/>
 {% endif %}
 

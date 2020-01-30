@@ -6,6 +6,8 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template import loader
 
+from converter.backend.resolutions import resolution
+from converter.backend.resolutions import HD_1080
 from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import IPHONE_XS
 
@@ -23,8 +25,12 @@ def index(request):
         image = Image.open(request.FILES['uploaded_image'])
         filename = request.FILES['uploaded_image'].name
 
-        # TODO: Choose resolution
-        res = IPHONE_XS
+            # TODO: Choose resolution
+            if 'width' in request.POST and 'height' in request.POST:
+                width, height = request.POST['width'], request.POST['height']
+                res = resolution(f"{width}x{height}", int(width), int(height))
+            else:
+                res = HD_1080
 
         # TODO: Choose color, None will default to most common color
         color = None

@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-resolution = namedtuple("resolution", ["width", "height", "name"])
+resolution = namedtuple("resolution", ["name", "width", "height"])
 
 IPHONE_XS = resolution(name="iphone-xs", width=1125, height=2436)
 IPHONE_7P = resolution(name="iphone-7p", width=1080, height=1920)
