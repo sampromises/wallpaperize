@@ -41,8 +41,20 @@ def get_random_chars():
     allowable_characters = string.ascii_uppercase + string.ascii_lowercase + string.digits
     return ''.join(random.choice(allowable_characters) for _ in range(length))
 
+
 def get_final_filename(filename, suffix):
     randoms = get_random_chars()
     tokens = filename.split('.')
     name, extension = tokens[0], tokens[-1]
     return f"{name}-{suffix}-{randoms}.{extension}"
+
+
+def get_image_format(filename):
+    try:
+        extension = filename.split('.')[-1].upper()
+        if extension == "JPG":
+            return "JPEG"
+        else:
+            return extension
+    except:
+        return "JPEG"

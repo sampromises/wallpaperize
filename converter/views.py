@@ -14,6 +14,7 @@ from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import HD_1080
 from converter.backend.resolutions import resolution
 from converter.backend.util import get_final_filename
+from converter.backend.util import get_image_format
 from converter.forms import ImageForm
 from converter.models import Upload
 
@@ -46,7 +47,7 @@ def index(request):
 
             if settings.USE_S3:
                 bytes = io.BytesIO()  # this is a file object
-                wallpaper.save(bytes, "JPEG")
+                wallpaper.save(bytes, get_image_format(wallpaper_filename))
                 file = InMemoryUploadedFile(bytes, None, wallpaper_filename, 'image/jpeg',
                                             sys.getsizeof(bytes), None)
 
