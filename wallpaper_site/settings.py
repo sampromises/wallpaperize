@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import logging
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,11 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
                  'wallpaper-django.kcvb3tm4m8.us-east-1.elasticbeanstalk.com',
-                 '172.31.20.234',
-                 'ping.chartbeat.net',
-                 '52.87.92.188',
-                 'pespn.chartbeat.net',
-                 '34.194.164.46',
                  ]
 
 # Application definition
@@ -122,6 +117,27 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {"format": "%(asctime)s %(levelname)s %(module)s: %(message)s"}
+    },
+    "handlers": {
+        "analyzer": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "/opt/python/log/analyzer.log",
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "analyzer": {"handlers": ["analyzer"], "level": "DEBUG", "propagate": True}
+    },
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -162,3 +178,6 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+log = logging.getLogger("analyzer")
+log.info("settings.py completed")

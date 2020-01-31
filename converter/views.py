@@ -1,4 +1,5 @@
 import io
+import logging
 import os
 import sys
 
@@ -18,16 +19,21 @@ from converter.backend.util import get_image_format
 from converter.forms import ImageForm
 from converter.models import Upload
 
+log = logging.getLogger("analyzer")
+
 
 def redirect_wallpaper(request):
+    log.info("Redirecting root to /wallpaper...")
     return redirect('/wallpaper')
 
 
 def index(request):
+    log.info("views.index called")
     template = loader.get_template('converter/index.html')
 
     try:
         if request.method == 'POST' and request.FILES['image']:
+            log.info("Starting to handle POST request with image...")
             image = Image.open(request.FILES['image'])
             filename = request.FILES['image'].name
 
@@ -35,27 +41,29 @@ def index(request):
             if 'width' in request.POST and 'height' in request.POST:
                 width, height = request.POST['width'], request.POST['height']
                 res = resolution(f"{width}x{height}", int(width), int(height))
+                log.info(f"Resolution given:{res}")
             else:
                 res = HD_1080
+                log.info(f"Resolution not given, using default:{res}")
 
             # TODO: Choose color, None will default to most common color
             color = None
 
             wallpaper = create_wallpaper(image, res, color)
             wallpaper_filename = get_final_filename(filename, res.name)
-            print("wallpaper_filename:", wallpaper_filename)
+            log.info("Final wallpaper_filename:", wallpaper_filename)
 
             if settings.USE_S3:
+                log.info("Converting wallpaper to bytes...")
                 bytes = io.BytesIO()  # this is a file object
                 wallpaper.save(bytes, get_image_format(wallpaper_filename))
                 file = InMemoryUploadedFile(bytes, None, wallpaper_filename, 'image/jpeg',
                                             sys.getsizeof(bytes), None)
 
-                print("UPLOADING TO S3")
+                log.info("Uploading wallpaper to S3...")
                 upload = Upload(file=file)
-                print("Upload created")
                 upload.save()
-                print("Upload saved")
+                log.info("Done")
             else:
                 fs = FileSystemStorage()
                 wallpaper_path = os.path.join(fs.base_location, wallpaper_filename)
@@ -69,8 +77,10 @@ def index(request):
 
             return HttpResponse(template.render(context, request))
     except Exception as e:
+        log.info(f"Exception caught while handling POST request: {e}")
         return HttpResponse(template.render(context, request))
 
+    log.info(f"Responding to GET request...")
     context = {
         "form": ImageForm()
     }
