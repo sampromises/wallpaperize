@@ -40,3 +40,9 @@ def get_random_chars():
     length = 16
     allowable_characters = string.ascii_uppercase + string.ascii_lowercase + string.digits
     return ''.join(random.choice(allowable_characters) for _ in range(length))
+
+def get_final_filename(filename, suffix):
+    randoms = get_random_chars()
+    tokens = filename.split('.')
+    name, extension = tokens[0], tokens[-1]
+    return f"{name}-{suffix}-{randoms}.{extension}"

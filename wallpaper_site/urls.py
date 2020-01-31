@@ -19,7 +19,11 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('wallpaper/', include('converter.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from converter.views import redirect_wallpaper
+
+urlpatterns = \
+    [
+        path('admin/', admin.site.urls),
+        path('', redirect_wallpaper),
+        path('wallpaper/', include('converter.urls')),
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

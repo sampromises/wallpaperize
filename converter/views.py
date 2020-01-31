@@ -7,21 +7,19 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.template import loader
 
 from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import HD_1080
 from converter.backend.resolutions import resolution
-from converter.backend.util import get_random_chars
+from converter.backend.util import get_final_filename
 from converter.forms import ImageForm
 from converter.models import Upload
 
 
-def get_final_filename(filename, suffix):
-    randoms = get_random_chars()
-    tokens = filename.split('.')
-    name, extension = tokens[0], tokens[-1]
-    return f"{name}-{suffix}-{randoms}.{extension}"
+def redirect_wallpaper(request):
+    return redirect('/wallpaper')
 
 
 def index(request):
@@ -70,8 +68,6 @@ def index(request):
 
             return HttpResponse(template.render(context, request))
     except Exception as e:
-        raise e
-        context = {"errors": True}
         return HttpResponse(template.render(context, request))
 
     context = {
