@@ -1,6 +1,6 @@
-from collections import namedtuple
-from converter.backend.util import get_most_frequent_color
 from PIL import Image
+
+from converter.backend.util import get_most_frequent_color
 
 
 def get_background(color, res):
@@ -8,31 +8,45 @@ def get_background(color, res):
     return image
 
 
-def resize_image(image, bg_resolution):
+def get_resized_resolution(image_resolution, bg_resolution):
     """Return a resized image that fits completely within a given resolution"""
-    img_x, img_y = image.size
-    bg_x, bg_y = bg_resolution.width, bg_resolution.height
+    img_x, img_y = image_resolution
+    bg_x, bg_y = bg_resolution
 
     if img_x > bg_x or img_y > bg_y:  # Image shrinks
+        print("Image shrinks")
         if img_x > bg_x and img_y > bg_y:  # Image larger in both dimensions
             if abs(img_x - bg_x) > abs(img_y - bg_y):
-                length = bg_x
+                scale = bg_x / img_x
             else:
-                length = bg_y
+                scale = bg_y / img_y
         elif img_x > bg_x:  # Image larger in width
-            length = bg_x
-        else:  # Image larger in height
-            length = bg_y
-        resized = image.copy()
-        resized.thumbnail((length, length), Image.ANTIALIAS)
-        return resized
+            scale = bg_x / img_x
+        elif img_y > bg_y:  # Image larger in height
+            scale = bg_y / img_y
+        else:
+            raise Exception("Uncaught case")
+        return round(img_x * scale), round(img_y * scale)
     else:  # Image enlarges
+        print("Image enlarges")
         if abs(img_x - bg_x) < abs(img_y - bg_y):  # Scale in X direction
             scale = bg_x / img_x
         else:  # Scale in Y direction
             scale = bg_y / img_y
-        x, y = round(img_x * scale), round(img_y * scale)
-        resized = image.resize((x, y), Image.ANTIALIAS)
+        return round(img_x * scale), round(img_y * scale)
+
+
+def resize_image(image, bg_resolution):
+    """Return a resized image that fits completely within a given resolution"""
+    old_width, old_height = image.size
+    new_width, new_height = get_resized_resolution(image.size, (bg_resolution.width, bg_resolution.height))
+
+    if new_width > old_width or new_height > old_height:  # Image shrinks
+        resized = image.copy()
+        resized.thumbnail((new_width, new_height), Image.ANTIALIAS)
+        return resized
+    else:  # Image enlarges
+        resized = image.resize((new_width, new_height), Image.ANTIALIAS)
         return resized
 
 
