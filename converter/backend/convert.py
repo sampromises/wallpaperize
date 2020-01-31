@@ -38,12 +38,13 @@ def resize_image(image, bg_resolution):
     """Return a resized image that fits completely within a given resolution"""
     old_width, old_height = image.size
     new_width, new_height = get_resized_resolution(image.size, (bg_resolution.width, bg_resolution.height))
-
-    if new_width > old_width or new_height > old_height:  # Image shrinks
+    if new_width < old_width or new_height < old_height:  # Image shrinks
+        print("Image shrinks")
         resized = image.copy()
         resized.thumbnail((new_width, new_height), Image.ANTIALIAS)
         return resized
     else:  # Image enlarges
+        print("Image enlarges")
         resized = image.resize((new_width, new_height), Image.ANTIALIAS)
         return resized
 

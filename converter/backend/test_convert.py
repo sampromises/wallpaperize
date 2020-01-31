@@ -66,6 +66,8 @@ def test_shorter_width_shorter_height():
     img_resolution = (50, 75)
     assert (67, 100) == get_resized_resolution(img_resolution, BG_RESOLUTION)
 
+    assert (920, 1080) == get_resized_resolution((409, 480), (1920, 1080))
+
 
 def test_shorter_width_same_height():
     img_resolution = (50, 100)
