@@ -1,8 +1,11 @@
+import io
 import os
+import sys
 
 from PIL import Image
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
 from django.template import loader
 
@@ -10,6 +13,7 @@ from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import HD_1080
 from converter.backend.resolutions import resolution
 from converter.forms import ImageForm
+from converter.models import Upload
 
 
 def add_suffix(filename, suffix):
@@ -39,10 +43,21 @@ def index(request):
             wallpaper = create_wallpaper(image, res, color)
             wallpaper_filename = add_suffix(filename, res.name)
 
-            fs = FileSystemStorage()
+            if settings.USE_S3:
+                bytes = io.BytesIO()  # this is a file object
+                wallpaper.save(bytes, "JPEG")
+                file = InMemoryUploadedFile(bytes, None, wallpaper_filename, 'image/jpeg',
+                                            sys.getsizeof(bytes), None)
 
-            wallpaper_path = os.path.join(fs.base_location, wallpaper_filename)
-            wallpaper.save(wallpaper_path)
+                print("UPLOADING TO S3")
+                upload = Upload(file=file)
+                print("Upload created")
+                upload.save()
+                print("Upload saved")
+            else:
+                fs = FileSystemStorage()
+                wallpaper_path = os.path.join(fs.base_location, wallpaper_filename)
+                wallpaper.save(wallpaper_path)
 
             context = {
                 "wallpaper_created": True,
@@ -51,7 +66,8 @@ def index(request):
             }
 
             return HttpResponse(template.render(context, request))
-    except:
+    except Exception as e:
+        raise e
         context = {"errors": True}
         return HttpResponse(template.render(context, request))
 

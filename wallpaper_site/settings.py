@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'converter',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wallpaper_site.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -80,7 +78,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -100,6 +97,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -114,12 +114,43 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 # For Image uploads
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+USE_S3 = os.getenv('USE_S3') == 'TRUE'
+
+if USE_S3:
+    print("=" * 80)
+    print("USING S3")
+    print("=" * 80)
+    # aws settings
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    # s3 static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'wallpaper_site.storage_backends.MediaStorage'
+else:
+    print("=" * 80)
+    print("NOT USING S3")
+    print("=" * 80)
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
