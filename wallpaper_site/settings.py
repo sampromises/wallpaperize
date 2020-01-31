@@ -26,7 +26,13 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost',
-                 'wallpaper-django.kcvb3tm4m8.us-east-1.elasticbeanstalk.com']
+                 'wallpaper-django.kcvb3tm4m8.us-east-1.elasticbeanstalk.com',
+                 '172.31.20.234',
+                 'ping.chartbeat.net',
+                 '52.87.92.188',
+                 'pespn.chartbeat.net',
+                 '34.194.164.46',
+                 ]
 
 # Application definition
 
