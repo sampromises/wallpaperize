@@ -14,7 +14,6 @@ def get_resized_resolution(image_resolution, bg_resolution):
     bg_x, bg_y = bg_resolution
 
     if img_x > bg_x or img_y > bg_y:  # Image shrinks
-        print("Image shrinks")
         if img_x > bg_x and img_y > bg_y:  # Image larger in both dimensions
             if abs(img_x - bg_x) > abs(img_y - bg_y):
                 scale = bg_x / img_x
@@ -28,7 +27,6 @@ def get_resized_resolution(image_resolution, bg_resolution):
             raise Exception("Uncaught case")
         return round(img_x * scale), round(img_y * scale)
     else:  # Image enlarges
-        print("Image enlarges")
         if abs(img_x - bg_x) < abs(img_y - bg_y):  # Scale in X direction
             scale = bg_x / img_x
         else:  # Scale in Y direction
