@@ -9,6 +9,7 @@ from django.template import loader
 from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import HD_1080
 from converter.backend.resolutions import resolution
+from converter.forms import ImageForm
 
 
 def add_suffix(filename, suffix):
@@ -21,9 +22,9 @@ def index(request):
     template = loader.get_template('converter/index.html')
 
     try:
-        if request.method == 'POST' and request.FILES['uploaded_image']:
-            image = Image.open(request.FILES['uploaded_image'])
-            filename = request.FILES['uploaded_image'].name
+        if request.method == 'POST' and request.FILES['image']:
+            image = Image.open(request.FILES['image'])
+            filename = request.FILES['image'].name
 
             # TODO: Choose resolution
             if 'width' in request.POST and 'height' in request.POST:
@@ -46,6 +47,7 @@ def index(request):
             context = {
                 "wallpaper_created": True,
                 "wallpaper_path": os.path.join(settings.MEDIA_URL, wallpaper_filename),
+                "form": ImageForm(),
             }
 
             return HttpResponse(template.render(context, request))
@@ -53,4 +55,7 @@ def index(request):
         context = {"errors": True}
         return HttpResponse(template.render(context, request))
 
-    return HttpResponse(template.render({}, request))
+    context = {
+        "form": ImageForm()
+    }
+    return HttpResponse(template.render(context, request))

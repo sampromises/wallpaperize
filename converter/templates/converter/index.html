@@ -17,29 +17,16 @@
 <body>
 
 {% if errors %}
-    <p>Something went wrong.</p>
+<p>Something went wrong.</p>
 {% endif %}
 
 {% load static %}
 
+
 {% block content %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    Upload image:
-
-    <br>
-
-    <input type="file" name="uploaded_image">
-
-    <br><br>
-
-    Enter desired resolution:
-    <br>
-    Width: <input type="text" name="width" value="1920">
-    Height: <input type="text" name="height" value="1080">
-
-    <br><br>
-
+    {{ form }}
     <button type="submit">Submit</button>
 </form>
 
