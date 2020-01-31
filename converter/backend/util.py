@@ -1,11 +1,13 @@
 from __future__ import print_function
+
 import binascii
-import struct
-from PIL import Image
+import random
+import string
+
 import numpy as np
 import scipy
-import scipy.misc
 import scipy.cluster
+import scipy.misc
 
 from converter.backend.color import RGB
 
@@ -32,3 +34,9 @@ def get_most_frequent_color(im):
     colour = binascii.hexlify(bytearray(int(c) for c in peak)).decode('ascii')
 
     return RGB(int(peak[0]), int(peak[1]), int(peak[2]))
+
+
+def get_random_chars():
+    length = 16
+    allowable_characters = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    return ''.join(random.choice(allowable_characters) for _ in range(length))

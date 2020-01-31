@@ -12,14 +12,16 @@ from django.template import loader
 from converter.backend.convert import create_wallpaper
 from converter.backend.resolutions import HD_1080
 from converter.backend.resolutions import resolution
+from converter.backend.util import get_random_chars
 from converter.forms import ImageForm
 from converter.models import Upload
 
 
-def add_suffix(filename, suffix):
+def get_final_filename(filename, suffix):
+    randoms = get_random_chars()
     tokens = filename.split('.')
     name, extension = tokens[0], tokens[-1]
-    return f"{name}-{suffix}.{extension}"
+    return f"{name}-{suffix}-{randoms}.{extension}"
 
 
 def index(request):
@@ -41,7 +43,8 @@ def index(request):
             color = None
 
             wallpaper = create_wallpaper(image, res, color)
-            wallpaper_filename = add_suffix(filename, res.name)
+            wallpaper_filename = get_final_filename(filename, res.name)
+            print("wallpaper_filename:", wallpaper_filename)
 
             if settings.USE_S3:
                 bytes = io.BytesIO()  # this is a file object
