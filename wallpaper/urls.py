@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from converter import views
+from wallpaper import views
 
 urlpatterns = \
     [

@@ -9,7 +9,7 @@ import scipy
 import scipy.cluster
 import scipy.misc
 
-from converter.backend.color import RGB
+from wallpaper.backend.color import RGB
 
 NUM_CLUSTERS = 5
 
@@ -46,7 +46,9 @@ def get_final_filename(filename, suffix):
     randoms = get_random_chars()
     tokens = filename.split('.')
     name, extension = tokens[0], tokens[-1]
-    return f"{name}-{suffix}-{randoms}.{extension}"
+    filename = f"{name}-{suffix}-{randoms}.{extension}"
+    filename = filename.replace(' ', '_')
+    return filename
 
 
 def get_image_format(filename):

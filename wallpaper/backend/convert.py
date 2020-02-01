@@ -1,6 +1,10 @@
+import logging
+
 from PIL import Image
 
-from converter.backend.util import get_most_frequent_color
+from wallpaper.backend.util import get_most_frequent_color
+
+log = logging.getLogger("app")
 
 
 def get_background(color, res):
@@ -39,12 +43,12 @@ def resize_image(image, bg_resolution):
     old_width, old_height = image.size
     new_width, new_height = get_resized_resolution(image.size, (bg_resolution.width, bg_resolution.height))
     if new_width < old_width or new_height < old_height:  # Image shrinks
-        print("Image shrinks")
+        log.info("Image shrinks")
         resized = image.copy()
         resized.thumbnail((new_width, new_height), Image.ANTIALIAS)
         return resized
     else:  # Image enlarges
-        print("Image enlarges")
+        log.info("Image enlarges")
         resized = image.resize((new_width, new_height), Image.ANTIALIAS)
         return resized
 

@@ -1,5 +1,5 @@
 """
-ASGI config for wallpaper_site project.
+ASGI config for sskywalker project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wallpaper_site.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sskywalker.settings')
 
 application = get_asgi_application()

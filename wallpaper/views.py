@@ -11,15 +11,15 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
 
-from converter.backend.convert import create_wallpaper
-from converter.backend.resolutions import HD_1080
-from converter.backend.resolutions import resolution
-from converter.backend.util import get_final_filename
-from converter.backend.util import get_image_format
-from converter.forms import ImageForm
-from converter.models import Upload
+from wallpaper.backend.convert import create_wallpaper
+from wallpaper.backend.resolutions import HD_1080
+from wallpaper.backend.resolutions import resolution
+from wallpaper.backend.util import get_final_filename
+from wallpaper.backend.util import get_image_format
+from wallpaper.forms import ImageForm
+from wallpaper.models import Upload
 
-log = logging.getLogger("analyzer")
+log = logging.getLogger("app")
 
 
 def redirect_wallpaper(request):
@@ -29,7 +29,7 @@ def redirect_wallpaper(request):
 
 def index(request):
     log.info("views.index called")
-    template = loader.get_template('converter/index.html')
+    template = loader.get_template('wallpaper/index.html')
 
     try:
         if request.method == 'POST' and request.FILES['image']:
@@ -51,7 +51,7 @@ def index(request):
 
             wallpaper = create_wallpaper(image, res, color)
             wallpaper_filename = get_final_filename(filename, res.name)
-            log.info("Final wallpaper_filename:", wallpaper_filename)
+            log.info(f"Final wallpaper_filename: {wallpaper_filename}")
 
             if settings.USE_S3:
                 log.info("Converting wallpaper to bytes...")

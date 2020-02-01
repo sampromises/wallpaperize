@@ -1,5 +1,5 @@
 """
-WSGI config for wallpaper_site project.
+WSGI config for sskywalker project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,9 +11,9 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-log = logging.getLogger("analyzer")
+log = logging.getLogger("app")
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wallpaper_site.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sskywalker.settings')
 
 log.info("wsgi.py called...")
 application = get_wsgi_application()

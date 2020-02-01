@@ -1,0 +1,14 @@
+html, body {
+    height: 100% !important;
+    background-color: #333 !important;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+/* Don't show asterisk for required form fields */
+.asteriskField {
+    display: none;
+}

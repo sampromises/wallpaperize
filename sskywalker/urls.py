@@ -1,4 +1,4 @@
-"""wallpaper_site URL Configuration
+"""sskywalker URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -19,11 +19,11 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
-from converter.views import redirect_wallpaper
+from wallpaper.views import redirect_wallpaper
 
 urlpatterns = \
     [
         path('admin/', admin.site.urls),
         path('', redirect_wallpaper),
-        path('wallpaper/', include('converter.urls')),
+        path('wallpaper/', include('wallpaper.urls')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

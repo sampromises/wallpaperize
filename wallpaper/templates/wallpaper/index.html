@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Wallpaper</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'wallpaper/styles.css' %}">
+</head>
+
+<body class="text-center">
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if errors %}
+            <p class="text-white">Something went wrong...</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-centered">
+            <img src="{% static 'wallpaper/example.png' %}" alt="Demonstration Image" class="img-fluid center"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-centered">
+            {% load crispy_forms_tags %}
+            <form method="post" enctype="multipart/form-data" class="text-white">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-centered">
+            {% if wallpaper_created %}
+            <br>
+            <img src="{{ wallpaper_path }}" alt="Wallpaper Image" class="img-fluid center"/>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
