@@ -78,6 +78,9 @@ def index(request):
             return HttpResponse(template.render(context, request))
     except Exception as e:
         log.info(f"Exception caught while handling POST request: {e}")
+        context = {
+            "errors": True
+        }
         return HttpResponse(template.render(context, request))
 
     log.info(f"Responding to GET request...")
