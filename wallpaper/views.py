@@ -1,10 +1,12 @@
 import io
 import logging
 import os
+import re
 import sys
 
 from PIL import Image
 from django.conf import settings
+from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
@@ -12,11 +14,11 @@ from django.shortcuts import redirect
 from django.template import loader
 
 from wallpaper.backend.convert import create_wallpaper
-from wallpaper.backend.resolutions import HD_1080
+from wallpaper.backend.resolutions import Resolution
 from wallpaper.backend.resolutions import resolution
 from wallpaper.backend.util import get_final_filename
 from wallpaper.backend.util import get_image_format
-from wallpaper.forms import ImageForm
+from wallpaper.forms import InputForm
 from wallpaper.models import Upload
 
 log = logging.getLogger("app")
@@ -30,6 +32,7 @@ def redirect_wallpaper(request):
 def index(request):
     log.info("views.index called")
     template = loader.get_template('wallpaper/index.html')
+    errors = []
 
     try:
         if request.method == 'POST' and request.FILES['image']:
@@ -38,19 +41,21 @@ def index(request):
             filename = request.FILES['image'].name
 
             # TODO: Choose resolution
-            if 'width' in request.POST and 'height' in request.POST:
-                width, height = request.POST['width'], request.POST['height']
-                res = resolution(f"{width}x{height}", int(width), int(height))
+            try:
+                groups = re.match(r'.*?([0-9]+).*?([0-9]+)', request.POST['resolution']).groups()
+                width, height = int(groups[0]), int(groups[1])
+                res = resolution(f"{width}x{height}", width, height)
                 log.info(f"Resolution given:{res}")
-            else:
-                res = HD_1080
-                log.info(f"Resolution not given, using default:{res}")
+            except:
+                res = Resolution.DEFAULT
+                log.info(f"Invalid resolution, using default:{Resolution.DEFAULT}")
+                messages.error(request, f"Invalid resolution, using default: {res.width}x{res.height}")
 
             # TODO: Choose color, None will default to most common color
             color = None
 
             wallpaper = create_wallpaper(image, res, color)
-            wallpaper_filename = get_final_filename(filename, res.name)
+            wallpaper_filename = get_final_filename(filename, res)
             log.info(f"Final wallpaper_filename: {wallpaper_filename}")
 
             if settings.USE_S3:
@@ -72,19 +77,22 @@ def index(request):
             context = {
                 "wallpaper_created": True,
                 "wallpaper_path": os.path.join(settings.MEDIA_URL, wallpaper_filename),
-                "form": ImageForm(),
+                "errors": errors,
+                "form": InputForm(),
             }
 
             return HttpResponse(template.render(context, request))
     except Exception as e:
-        log.info(f"Exception caught while handling POST request: {e}")
+        log.exception(f"Exception caught while handling POST request:")
         context = {
-            "errors": True
+            "errors": errors,
+            "form": InputForm(),
         }
+        messages.error(request, f"Something went wrong...")
         return HttpResponse(template.render(context, request))
 
     log.info(f"Responding to GET request...")
     context = {
-        "form": ImageForm()
+        "form": InputForm()
     }
     return HttpResponse(template.render(context, request))

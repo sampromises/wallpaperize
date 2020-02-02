@@ -58,7 +58,6 @@ def get_center(resolution):
 
 
 def create_wallpaper(image, resolution, background_color=None):
-    # image = Image.open(image_path)
     resized_image = resize_image(image, resolution)
 
     if background_color is None:

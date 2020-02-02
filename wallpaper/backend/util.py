@@ -42,11 +42,11 @@ def get_random_chars():
     return ''.join(random.choice(allowable_characters) for _ in range(length))
 
 
-def get_final_filename(filename, suffix):
+def get_final_filename(filename, res):
     randoms = get_random_chars()
     tokens = filename.split('.')
     name, extension = tokens[0], tokens[-1]
-    filename = f"{name}-{suffix}-{randoms}.{extension}"
+    filename = f"{name}-{res.width}x{res.height}-{randoms}.{extension}"
     filename = filename.replace(' ', '_')
     return filename
 

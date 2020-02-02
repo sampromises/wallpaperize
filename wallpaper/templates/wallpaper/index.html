@@ -20,13 +20,15 @@
 <body class="text-center">
 
 <div class="container">
+    {% if messages %}
     <div class="row">
-        <div class="col">
-            {% if errors %}
-            <p class="text-white">Something went wrong...</p>
-            {% endif %}
+        <div class="col-md-6 col-centered alert alert-danger" role="alert">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 
     <div class="row">
         <div class="col-md-6 col-centered">
