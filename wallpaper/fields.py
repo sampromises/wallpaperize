@@ -16,7 +16,7 @@ class ListResolutionWidget(forms.TextInput):
         text_html = super(ListResolutionWidget, self).render(name, value, attrs=attrs)
         data_list = f'<datalist id="list__{self._name}">'
         for res in self._res_list:
-            data_list += f'<option value="{res.width}x{res.height}">{res.name}</option>'
+            data_list += f'<option value="{res.name}">'
         data_list += '</datalist>'
 
         return text_html + data_list

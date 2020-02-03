@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import binascii
 import random
+import re
 import string
 
 import numpy as np
@@ -60,3 +61,9 @@ def get_image_format(filename):
             return extension
     except:
         return "JPEG"
+
+
+def parse_resolution(text):
+    match = re.search(r'([0-9]+)\s*[x,\s]\s*([0-9]+)\)?$', text)
+    groups = match.groups()
+    return int(groups[0]), int(groups[1])
