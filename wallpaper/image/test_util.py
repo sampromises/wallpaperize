@@ -1,4 +1,4 @@
-from wallpaper.backend.util import parse_resolution
+from wallpaper.image.util import parse_resolution
 
 
 def test_parse_resolution():

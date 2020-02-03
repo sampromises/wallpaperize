@@ -2,7 +2,7 @@ import logging
 
 from PIL import Image
 
-from wallpaper.backend.util import get_most_frequent_color
+from wallpaper.image.util import get_most_frequent_color
 
 log = logging.getLogger("app")
 

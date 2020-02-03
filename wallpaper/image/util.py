@@ -10,7 +10,7 @@ import scipy
 import scipy.cluster
 import scipy.misc
 
-from wallpaper.backend.color import RGB
+from wallpaper.image.color import RGB
 
 NUM_CLUSTERS = 5
 

@@ -13,12 +13,13 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
 
-from wallpaper.backend.convert import create_wallpaper
-from wallpaper.backend.resolutions import Resolution
-from wallpaper.backend.resolutions import resolution
-from wallpaper.backend.util import get_final_filename
-from wallpaper.backend.util import get_image_format
+from wallpaper.image.convert import create_wallpaper
+from wallpaper.image.resolutions import Resolution
+from wallpaper.image.resolutions import resolution
+from wallpaper.image.util import get_final_filename
+from wallpaper.image.util import get_image_format
 from wallpaper.forms import InputForm
+from wallpaper.image.util import parse_resolution
 from wallpaper.models import Upload
 
 log = logging.getLogger("app")
@@ -42,8 +43,7 @@ def index(request):
 
             # TODO: Choose resolution
             try:
-                groups = re.match(r'.*?([0-9]+).*?([0-9]+)', request.POST['resolution']).groups()
-                width, height = int(groups[0]), int(groups[1])
+                width, height = parse_resolution(request.POST['resolution'])
                 res = resolution(f"{width}x{height}", width, height)
                 log.info(f"Resolution given:{res}")
             except:

@@ -2,7 +2,7 @@ from typing import List
 
 from django import forms
 
-from wallpaper.backend.resolutions import Resolution
+from wallpaper.image.resolutions import Resolution
 
 
 class ListResolutionWidget(forms.TextInput):

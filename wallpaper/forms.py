@@ -4,7 +4,7 @@ from django import forms
 from django.forms import Form
 from django.forms import ImageField
 
-from wallpaper.backend.resolutions import Resolution
+from wallpaper.image.resolutions import Resolution
 from wallpaper.fields import ListResolutionWidget
 
 log = logging.getLogger("app")
@@ -18,7 +18,6 @@ class InputForm(Form):
     )
 
     def __init__(self, *args, **kwargs):
-        log.info(f"List of resolutions:\n{[res for res in Resolution]}")
         _res_list = kwargs.pop('res_list', Resolution)
         super(InputForm, self).__init__(*args, **kwargs)
 

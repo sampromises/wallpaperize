@@ -1,4 +1,4 @@
-from wallpaper.backend.convert import get_resized_resolution
+from wallpaper.image.convert import get_resized_resolution
 
 BG_RESOLUTION = (100, 100)  # Fixed
 
