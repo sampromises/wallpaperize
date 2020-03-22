@@ -1,8 +1,8 @@
 from __future__ import print_function
 
 import binascii
-import random
-import string
+import os
+import urllib.parse
 
 import numpy as np
 import scipy
@@ -35,29 +35,8 @@ def get_most_frequent_color(im):
     return RGB(int(peak[0]), int(peak[1]), int(peak[2]))
 
 
-def get_random_chars():
-    length = 16
-    allowable_characters = (
-        string.ascii_uppercase + string.ascii_lowercase + string.digits
-    )
-    return "".join(random.choice(allowable_characters) for _ in range(length))
-
-
 def get_final_filename(filename, res):
-    randoms = get_random_chars()
-    tokens = filename.split(".")
-    name, extension = tokens[0], tokens[-1]
-    filename = f"{name}-{res.width}x{res.height}-{randoms}.{extension}"
-    filename = filename.replace(" ", "_")
+    basename, extension = os.path.splitext(filename)
+    filename = f"{basename}-{res.width}x{res.height}" + extension
+    filename = urllib.parse.quote(filename)
     return filename
-
-
-def get_image_format(filename):
-    try:
-        extension = filename.split(".")[-1].upper()
-        if extension == "JPG":
-            return "JPEG"
-        else:
-            return extension
-    except:
-        return "JPEG"

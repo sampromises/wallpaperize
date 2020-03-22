@@ -63,14 +63,14 @@ def index():
     wallpaper_path = None
     if form.validate_on_submit():
         print("Form submitted successfully!")
-        print(f"Submitted filename: {form.image.data}")
+        print(f"Submitted filename: {form.image.data.filename}")
         print(f"Submitted resolution: {form.resolution.data}")
         res = parse_res(form.resolution.data)
 
         color = None  # TODO Pick Color
 
         wallpaper = create_wallpaper(Image.open(form.image.data), res, color)
-        wallpaper_filename = get_final_filename(form.image.data.name, res)
+        wallpaper_filename = get_final_filename(form.image.data.filename, res)
         print(f"New wallpaper name: {wallpaper_filename}")
 
         wallpaper_path = wallpaper_filename
