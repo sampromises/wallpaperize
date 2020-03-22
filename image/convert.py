@@ -1,3 +1,7 @@
+import os
+import random
+import string
+
 from image.util import get_most_frequent_color
 from PIL import Image
 
@@ -54,6 +58,20 @@ def get_center(resolution):
     return resolution.width // 2, resolution.height // 2
 
 
+def _get_random_chars():
+    length = 8
+    allowable_characters = (
+        string.ascii_uppercase + string.ascii_lowercase + string.digits
+    )
+    return "".join(random.choice(allowable_characters) for _ in range(length))
+
+
+def get_wallpaper_filename(filename, res):
+    basename, extension = os.path.splitext(filename)
+    filename = f"{basename}-{res.width}x{res.height}-{_get_random_chars()}" + extension
+    return filename
+
+
 def create_wallpaper(image, resolution, background_color=None):
     resized_image = resize_image(image, resolution)
 
@@ -62,7 +80,7 @@ def create_wallpaper(image, resolution, background_color=None):
 
     cx, cy = get_center(resolution)
     width, height = resized_image.size
-    background = get_background(background_color, resolution)
-    background.paste(resized_image, (cx - width // 2, cy - height // 2))
+    wallpaper = get_background(background_color, resolution)
+    wallpaper.paste(resized_image, (cx - width // 2, cy - height // 2))
 
-    return background
+    return wallpaper

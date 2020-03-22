@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-centered text-white">
+        {% if wallpaper_path %}
+        <br>
+        <img src="{{ wallpaper_path }}" alt="{{ wallpaper_path }}" class="img-fluid center"/>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

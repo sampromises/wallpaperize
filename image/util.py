@@ -1,8 +1,6 @@
 from __future__ import print_function
 
 import binascii
-import os
-import urllib.parse
 
 import numpy as np
 import scipy
@@ -33,10 +31,3 @@ def get_most_frequent_color(im):
     colour = binascii.hexlify(bytearray(int(c) for c in peak)).decode("ascii")
 
     return RGB(int(peak[0]), int(peak[1]), int(peak[2]))
-
-
-def get_final_filename(filename, res):
-    basename, extension = os.path.splitext(filename)
-    filename = f"{basename}-{res.width}x{res.height}" + extension
-    filename = urllib.parse.quote(filename)
-    return filename

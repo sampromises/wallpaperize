@@ -1,13 +1,14 @@
+import io
 import os
 import re
 
-from flask import Flask, flash, render_template
+from flask import Flask, flash, redirect, render_template, send_file, url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from image.convert import create_wallpaper
+from image.convert import create_wallpaper, get_wallpaper_filename
 from image.resolution import Resolution
-from image.util import get_final_filename
 from PIL import Image
+from s3_client import get_s3_path, upload_image
 from wtforms import SelectField, SubmitField
 from wtforms.validators import InputRequired
 
@@ -57,6 +58,19 @@ def parse_res(resolution):
     return res
 
 
+def serve_pil_image(image):
+    bytes = io.BytesIO()  # this is a file object
+    image.save(bytes, "JPEG")
+    bytes.seek(0)
+    return send_file(bytes, mimetype="image/jpeg")
+
+
+@app.route("/<wallpaper_filename>")
+def wallpaper(wallpaper_filename):
+    s3_path = get_s3_path(wallpaper_filename)
+    return render_template("wallpaper.html", wallpaper_path=s3_path)
+
+
 @app.route("/", methods=("GET", "POST"))
 def index():
     form = UploadForm()
@@ -70,9 +84,14 @@ def index():
         color = None  # TODO Pick Color
 
         wallpaper = create_wallpaper(Image.open(form.image.data), res, color)
-        wallpaper_filename = get_final_filename(form.image.data.filename, res)
+        wallpaper_filename = get_wallpaper_filename(form.image.data.filename, res)
         print(f"New wallpaper name: {wallpaper_filename}")
 
-        wallpaper_path = wallpaper_filename
+        print(f"Uploading to S3...")
+        upload_image(wallpaper, wallpaper_filename)
+        s3_path = get_s3_path(wallpaper_filename)
+        print(f"Done, uploaded to: {s3_path}")
 
-    return render_template("index.html", form=form, wallpaper_path=wallpaper_path)
+        return redirect(url_for("wallpaper", wallpaper_filename=wallpaper_filename))
+
+    return render_template("index.html", form=form)
