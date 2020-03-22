@@ -19,15 +19,17 @@
 <body class="text-center">
 
 <div class="container">
+    {% with messages = get_flashed_messages() %}
     {% if messages %}
     <div class="row">
         <div class="col-md-6 alert alert-danger col-centered" role="alert">
             {% for message in messages %}
-            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            <p>{{ message }}</p>
             {% endfor %}
         </div>
     </div>
     {% endif %}
+    {% endwith %}
 
     <div class="row">
         <div class="col-md-6 col-centered">
@@ -40,9 +42,10 @@
         <div class="col-md-6 col-centered">
             <form method="post" enctype="multipart/form-data" class="text-white">
                 {{ form.csrf_token }}
+                {{ form.hidden_tag() }}
                 <div class="form-group">
-                    {{ form.upload.label }}
-                    {{ form.upload(class_='form-control') }}
+                    {{ form.image.label }}
+                    {{ form.image(class_='form-control') }}
                 </div>
                 <div class="form-group">
                     {{ form.resolution.label }}
@@ -50,6 +53,15 @@
                 </div>
                 {{ form.submit(class_='form-control') }}
             </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-centered">
+            {% if wallpaper_path %}
+            <br>
+            <img src="{{ wallpaper_path }}" alt="Wallpaper Image" class="img-fluid center"/>
+            {% endif %}
         </div>
     </div>
 </div>

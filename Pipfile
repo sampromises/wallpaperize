@@ -7,9 +7,14 @@ verify_ssl = true
 black = "*"
 isort = "*"
 pre-commit = "*"
+pytest = "*"
 
 [packages]
 flask = "*"
+pillow = "*"
+numpy = "*"
+scipy = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
