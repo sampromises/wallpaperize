@@ -19,6 +19,7 @@ boto3 = "*"
 requests = "*"
 bs4 = "*"
 cachetools = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
