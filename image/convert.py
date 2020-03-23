@@ -73,6 +73,9 @@ def get_wallpaper_filename(filename, res):
 
 
 def create_wallpaper(image, resolution, background_color=None):
+    print(
+        f"create_wallpaer: resolution={resolution}, background_color={background_color}"
+    )
     resized_image = resize_image(image, resolution)
 
     if background_color is None:

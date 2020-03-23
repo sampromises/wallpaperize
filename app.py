@@ -5,14 +5,16 @@ import re
 from flask import Flask, flash, redirect, render_template, request, send_file, url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
+from image.color import RGB
 from image.convert import create_wallpaper, get_wallpaper_filename
 from PIL import Image
 from resolution import Resolution, get_latest_resolutions
 from s3_client import get_s3_path, upload_image
-from wtforms import SelectField, SubmitField
+from wtforms import BooleanField, SelectField, StringField, SubmitField
 from wtforms.validators import InputRequired
 
 app = Flask(__name__)
+
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 IMAGES = tuple("jpg jpe jpeg png gif svg bmp".split())
@@ -29,6 +31,8 @@ class UploadForm(FlaskForm):
         choices=get_latest_resolutions(),
         description="Find your device from the dropdown.",
     )
+    user_color = StringField("Background Color", validators=[])
+    use_default_color = BooleanField("Choose best background color for me",)
     submit = SubmitField("Submit")
 
 
@@ -76,7 +80,10 @@ def index():
         print(f"Submitted resolution: {form.resolution.data}")
         res = parse_res(form.resolution.data)
 
-        color = None  # TODO Pick Color
+        if form.use_default_color.data:
+            color = None
+        else:
+            color = RGB.from_hex(form.user_color.data)
 
         wallpaper = create_wallpaper(Image.open(form.image.data), res, color)
         wallpaper_filename = get_wallpaper_filename(form.image.data.filename, res)

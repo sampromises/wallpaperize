@@ -8,6 +8,8 @@
 <!-- Select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<!-- jscolor -->
+<script src="{{ url_for('static', filename='js/jscolor.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -31,6 +33,17 @@
                 {{ form.resolution.label }}
                 {{ form.resolution(class_='form-control') }}
             </div>
+            <fieldset>
+                <div class="form-group">
+                    {{ form.user_color.label }}
+                    {{ form.user_color(class_='form-control jscolor') }}
+                </div>
+            </fieldset>
+            <div class="form-check">
+                {{ form.use_default_color(checked=True, class_='form-check-input') }}
+                {{ form.use_default_color.label(class_='form-check-label') }}
+            </div>
+            <br>
             {{ form.submit(class_='form-control') }}
         </form>
     </div>
@@ -43,6 +56,7 @@
         $('#resolution').select2({
             sortResults: data => data.sort((a, b) => a.text.localeCompare(b.text)),
         });
+
         $('select').select2({
             width: '100%'
         });
