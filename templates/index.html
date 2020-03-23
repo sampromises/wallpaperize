@@ -40,7 +40,9 @@
 {% block html_script %}
 <script>
     $(document).ready(function () {
-        $('#resolution').select2();
+        $('#resolution').select2({
+            sortResults: data => data.sort((a, b) => a.text.localeCompare(b.text)),
+        });
         $('select').select2({
             width: '100%'
         });

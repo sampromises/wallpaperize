@@ -6,8 +6,8 @@ from flask import Flask, flash, redirect, render_template, request, send_file, u
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from image.convert import create_wallpaper, get_wallpaper_filename
-from image.resolution import Resolution
 from PIL import Image
+from resolution import Resolution, get_latest_resolutions
 from s3_client import get_s3_path, upload_image
 from wtforms import SelectField, SubmitField
 from wtforms.validators import InputRequired
@@ -24,24 +24,9 @@ class UploadForm(FlaskForm):
         validators=[InputRequired(), FileAllowed(IMAGES, "Only images allowed.")],
     )
     resolution = SelectField(
-        "Resolution",
+        "Device Resolution",
         validators=[InputRequired()],
-        choices=[
-            ("1125x2436", "iPhone X/XS (1125x2436)"),
-            ("1242x2688", "iPhone XS Max (1242x2688)"),
-            ("750x1334", "iPhone 7/8 (750x1334)"),
-            ("1080x1920", "iPhone 7/8 Plus (1080x1920)"),
-            ("2048x2732", "iPad Pro (2048x2732)"),
-            ("1536x2048", "iPad Third & Fourth Generation (1536x2048)"),
-            ("2560x1600", "Macbook Pro 13-inch (2560x1600)"),
-            ("1880x1800", "Macbook Pro 15-inch (2880x1800)"),
-            ("3072x1920", "Macbook Pro 16-inch (3072x1920)"),
-            ("500x500", "Thumbnail (500x500)"),
-            ("720x480", "HD (720x480)"),
-            ("1920x1080", "FHD (1920x1080)"),
-            ("2560x1440", "QHD (2560x1440)"),
-            ("3840x2160", "4K (3840x2160)"),
-        ],
+        choices=get_latest_resolutions(),
         description="Find your device from the dropdown.",
     )
     submit = SubmitField("Submit")

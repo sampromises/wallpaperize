@@ -16,6 +16,9 @@ numpy = "*"
 scipy = "*"
 pytest = "*"
 boto3 = "*"
+requests = "*"
+bs4 = "*"
+cachetools = "*"
 
 [requires]
 python_version = "3.8"
