@@ -2,17 +2,17 @@ import os
 import random
 import string
 
-from image.util import get_most_frequent_color
 from PIL import Image
+from util.color import get_most_frequent_color
 
 
-def get_background(color, res):
+def _get_background(color, res):
     image = Image.new("RGB", (res.width, res.height), color)
     return image
 
 
-def get_resized_resolution(image_resolution, bg_resolution):
-    """Return a resized image that fits completely within a given resolution"""
+def _get_resized_resolution(image_resolution, bg_resolution):
+    """Return a resized util that fits completely within a given resolution"""
     img_x, img_y = image_resolution
     bg_x, bg_y = bg_resolution
 
@@ -37,10 +37,10 @@ def get_resized_resolution(image_resolution, bg_resolution):
         return round(img_x * scale), round(img_y * scale)
 
 
-def resize_image(image, bg_resolution):
-    """Return a resized image that fits completely within a given resolution"""
+def _resize_image(image, bg_resolution):
+    """Return a resized util that fits completely within a given resolution"""
     old_width, old_height = image.size
-    new_width, new_height = get_resized_resolution(
+    new_width, new_height = _get_resized_resolution(
         image.size, (bg_resolution.width, bg_resolution.height)
     )
     if new_width < old_width or new_height < old_height:  # Image shrinks
@@ -54,7 +54,7 @@ def resize_image(image, bg_resolution):
         return resized
 
 
-def get_center(resolution):
+def _get_center(resolution):
     return resolution.width // 2, resolution.height // 2
 
 
@@ -76,14 +76,14 @@ def create_wallpaper(image, resolution, background_color=None):
     print(
         f"create_wallpaer: resolution={resolution}, background_color={background_color}"
     )
-    resized_image = resize_image(image, resolution)
+    resized_image = _resize_image(image, resolution)
 
     if background_color is None:
         background_color = get_most_frequent_color(image)
 
-    cx, cy = get_center(resolution)
+    cx, cy = _get_center(resolution)
     width, height = resized_image.size
-    wallpaper = get_background(background_color, resolution)
+    wallpaper = _get_background(background_color, resolution)
     wallpaper.paste(resized_image, (cx - width // 2, cy - height // 2))
 
     return wallpaper

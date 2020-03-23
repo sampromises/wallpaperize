@@ -11,7 +11,7 @@ def _sanitize_s3_filename(filename):
     return re.sub(r"[^0-9a-zA-Z!\-_.*'()]", "", filename)
 
 
-def get_image_format(filename):
+def _get_image_format(filename):
     try:
         extension = filename.split(".")[-1].upper()
         if extension == "JPG":
@@ -25,7 +25,7 @@ def get_image_format(filename):
 def upload_image(file, filename):
     s3_filename = _sanitize_s3_filename(filename)
     bytes = io.BytesIO()  # this is a file object
-    file.save(bytes, get_image_format(s3_filename))
+    file.save(bytes, _get_image_format(s3_filename))
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(BUCKET_NAME)
 

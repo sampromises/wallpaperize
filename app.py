@@ -5,11 +5,11 @@ import re
 from flask import Flask, flash, redirect, render_template, request, send_file, url_for
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from image.color import RGB
-from image.convert import create_wallpaper, get_wallpaper_filename
 from PIL import Image
-from resolution import Resolution, get_latest_resolutions
-from s3_client import get_s3_path, upload_image
+from util.color import RGB
+from util.convert import create_wallpaper, get_wallpaper_filename
+from util.resolution import Resolution, get_latest_resolutions
+from util.s3_client import get_s3_path, upload_image
 from wtforms import BooleanField, SelectField, StringField, SubmitField
 from wtforms.validators import InputRequired
 
@@ -53,7 +53,7 @@ def serve_pil_image(image):
     bytes = io.BytesIO()  # this is a file object
     image.save(bytes, "JPEG")
     bytes.seek(0)
-    return send_file(bytes, mimetype="image/jpeg")
+    return send_file(bytes, mimetype="util/jpeg")
 
 
 def flash_errors(form):
