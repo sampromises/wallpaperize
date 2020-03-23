@@ -11,6 +11,7 @@ pytest = "*"
 
 [packages]
 flask = "*"
+flask-wtf = "*"
 pillow = "*"
 numpy = "*"
 scipy = "*"
